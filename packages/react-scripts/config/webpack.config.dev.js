@@ -50,10 +50,15 @@ const sassModuleRegex = /\.module\.(scss|sass)$/;
 
 // common function to get style loaders
 const getStyleLoaders = (cssOptions, preProcessor) => {
+  const isModules = cssOptions && cssOptions.modules;
   const loaders = [
     require.resolve('style-loader'),
     {
-      loader: require.resolve('css-loader'),
+      loader:
+        isModules && useTypeScript
+          ? // css-loader drop-in replacement to generate TypeScript typings
+            require.resolve('@jpavon/typings-for-css-modules-loader')
+          : require.resolve('css-loader'),
       options: cssOptions,
     },
     {
